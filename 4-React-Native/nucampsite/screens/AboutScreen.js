@@ -1,10 +1,45 @@
-import { useState } from "react"
+import Loading from "../components/LoadingComponent"
 import { Avatar, Card, ListItem, Text } from "react-native-elements"
 import { ScrollView } from "react-native-gesture-handler"
-import { PARTNERS } from "../shared/partners"
+import { useSelector } from "react-redux"
+import { baseUrl } from "../shared/baseUrl"
 
 const AboutScreen=()=>{
-    const[partners,setPartners]= useState(PARTNERS)
+    const partners=useSelector((state)=>state.partners)
+
+    if(partners.isLoading){
+        return(
+            <ScrollView>
+            <Mission/>
+            <Card>
+                <Card.Title>
+                    Community Partners
+                </Card.Title>
+                <Card.Divider/>
+                <Loading/>
+            </Card>
+        
+        </ScrollView>
+
+        )
+
+    }
+    if(partners.errMess){
+        return(
+            <ScrollView>
+            <Mission/>
+            <Card>
+                <Card.Title>
+                    Community Partners
+                </Card.Title>
+                <Card.Divider/>
+                <Text>{partners.errMess}</Text>
+            </Card>
+        
+        </ScrollView>
+        )
+    }
+   
     return(
         <ScrollView>
             <Mission/>
@@ -13,9 +48,9 @@ const AboutScreen=()=>{
                     Community Partners
                 </Card.Title>
                 <Card.Divider/>
-                {partners.map((partner)=>{return(
+                {partners.partnersArray.map((partner)=>{return(
                     <ListItem key={partner.id}>
-                        <Avatar rounded source={partner.image}/>
+                        <Avatar rounded source={{ uri: baseUrl + partner.image}}/>
                         <ListItem.Content>
                             <ListItem.Title>
                                 {partner.name}
